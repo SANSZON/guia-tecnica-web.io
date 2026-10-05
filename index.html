@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guía técnica para productores locales y bancos de germoplasma comunitarios</title>
+<meta name="description" content="Conservación de semillas, germoplasma, manejo integrado de plagas y propuesta sostenible.">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+tailwind.config={theme:{extend:{fontFamily:{sans:['"Plus Jakarta Sans"','sans-serif']},colors:{darkBg:'#0b0b0b',cardBg:'#131313',accentGreen:'#4ade80',accentBlue:'#3b82f6',accentOrange:'#f97316',accentPink:'#ec4899'}}}}
+</script>
+<style>
+body{background:#0b0b0b;color:#f3f4f6;font-family:'Plus Jakarta Sans',sans-serif}
+/* Letras animadas */
+.word{display:inline-block;white-space:nowrap}
+.ch{display:inline-block;opacity:0;transform:translateY(60%) rotate(4deg);filter:blur(6px);
+ transition:opacity .6s ease,transform .7s cubic-bezier(.2,.8,.2,1),filter .6s ease;
+ transition-delay:calc(var(--i) * 28ms)}
+.in .ch{opacity:1;transform:none;filter:blur(0)}
+.fade{opacity:0;transform:translateY(24px);transition:opacity .8s ease,transform .8s ease}
+.fade.in{opacity:1;transform:none}
+.progress{position:fixed;top:0;left:0;height:3px;width:0;background:#4ade80;z-index:100}
+img{background:#131313}
+.tab-btn{padding:.55rem 1.1rem;border:1px solid rgba(255,255,255,.12);border-radius:999px;font-size:.85rem;color:#9ca3af;transition:.3s}
+.tab-btn:hover{color:#fff;border-color:rgba(255,255,255,.3)}
+.tab-btn.on{background:#fff;color:#000;border-color:#fff;font-weight:600}
+details>summary{list-style:none}details>summary::-webkit-details-marker{display:none}
+details[open]{border-color:rgba(255,255,255,.2)}
+input[type=range]{height:6px}
+:focus-visible{outline:2px solid #4ade80;outline-offset:3px}
+/* ===== INTRO (cinemática de entrada) ===== */
+body.locked{overflow:hidden;height:100%}
+#intro{position:fixed;inset:0;z-index:9999;background:#000;transition:opacity .9s cubic-bezier(.4,0,.2,1)}
+#intro.out{opacity:0;pointer-events:none}
+#intro .stage{position:fixed;inset:0;overflow:hidden;z-index:5;background:#000;font-size:clamp(2rem,min(6vw,8vh),4.5rem);font-weight:700;letter-spacing:-.01em;display:flex;align-items:center;justify-content:center;animation:stageFadeOut .4s ease 2.5s forwards}
+@keyframes stageFadeOut{to{opacity:0}}
+.intro-container{display:flex;gap:.35em;color:#fff;opacity:0;transform:scale(.9);animation:introZoomIn 1.5s cubic-bezier(.16,1,.3,1) 1s forwards}
+@keyframes introZoomIn{0%{opacity:0;transform:scale(.9)}50%{opacity:1}100%{opacity:0;transform:scale(1.15)}}
+.intro-word{display:inline-block}
+.video-container{position:fixed;inset:0;z-index:1;background:radial-gradient(circle at 50% 40%,#0f2a1c,#000 70%);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;animation:videoAppear .5s ease 2.5s forwards}
+.video-container video{width:100%;height:100%;object-fit:cover;transform:scale(1.2);animation:videoZoomOut 1s cubic-bezier(.16,1,.3,1) 2.5s forwards}
+@keyframes videoAppear{to{opacity:1}}
+@keyframes videoZoomOut{to{transform:scale(1)}}
+.presentation-layer{position:fixed;inset:0;z-index:3;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;padding:5vh 2rem 0;text-align:center;pointer-events:none;opacity:0;animation:layerAppear .4s ease 2.7s forwards}
+@keyframes layerAppear{to{opacity:1}}
+.main-title{font-size:clamp(2.2rem,3.8vw,3.6rem);font-weight:800;line-height:1.15;letter-spacing:-.02em;color:#E8F5E9;text-shadow:0 2px 12px rgba(0,0,0,.9);margin-bottom:1.2rem;max-width:1100px}
+.t-char{display:inline-block;opacity:0;transform:translateY(.6em);animation:charRise .3s cubic-bezier(.22,1,.36,1) forwards;animation-delay:var(--tdelay)}
+.t-space{display:inline-block;width:.3em}
+@keyframes charRise{to{opacity:1;transform:none}}
+.main-desc{font-size:clamp(1.05rem,1.4vw,1.3rem);line-height:1.4;color:#C8E6C9;text-shadow:0 1px 6px rgba(0,0,0,.9);opacity:0;max-width:800px;margin-bottom:1.8rem;transform:translateY(10px);animation:fadeUp .5s cubic-bezier(.22,1,.36,1) 4.2s forwards}
+.team-container{display:flex;flex-direction:column;gap:.3rem;font-size:clamp(1rem,1.2vw,1.15rem);font-weight:500;color:#D4EDDA;text-shadow:0 1px 4px rgba(0,0,0,.9)}
+.team-member{opacity:0;transform:translateY(8px);animation:fadeUp .4s cubic-bezier(.22,1,.36,1) forwards}
+.team-member:nth-child(1){animation-delay:4.8s}.team-member:nth-child(2){animation-delay:5.1s}
+@keyframes fadeUp{to{opacity:1;transform:none}}
+.fade-out-texts{animation:fadeOutTexts .3s ease forwards!important}
+@keyframes fadeOutTexts{to{opacity:0;transform:scale(.98)}}
+.skip-intro{position:fixed;right:1.5rem;bottom:1.5rem;z-index:20;padding:.5rem 1rem;font-size:.8rem;color:#d1d5db;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.2);border-radius:999px;backdrop-filter:blur(6px);opacity:0;animation:fadeUp .5s ease 1s forwards;transition:color .3s,border-color .3s}
+.skip-intro:hover{color:#fff;border-color:rgba(255,255,255,.5)}
+
+@media (prefers-reduced-motion:reduce){.ch,.fade{opacity:1;transform:none;filter:none;transition:none}}
+</style>
+</head>
+<body class="bg-darkBg text-gray-100 min-h-screen selection:bg-gray-800 selection:text-white locked">
+<div id="intro" role="presentation">
+  <div class="stage"><div class="intro-container"><span class="intro-word">Guía</span><span class="intro-word">Técnica</span></div></div>
+  <div class="video-container"><video id="bgVideo" src="multimedia/inicio.mp4" muted playsinline preload="auto"></video></div>
+  <div id="presentationLayer" class="presentation-layer">
+    <h1 id="dynamicTitle" class="main-title"></h1>
+    <p class="main-desc">Explica qué pasa dentro de una semilla, cómo almacenarla y cómo controlar plagas con química responsable.</p>
+    <div class="team-container"><div class="team-member">Francisco Dario Orellana</div><div class="team-member">Diego Ulises Mayorga Calvio</div></div>
+  </div>
+</div>
+<div class="progress" id="progress"></div>
+
+<header class="fixed top-0 inset-x-0 z-50 bg-darkBg/80 backdrop-blur border-b border-white/10 py-5 px-6 md:px-12 flex items-center justify-between">
+  <a href="#inicio" class="text-xl font-bold tracking-wider text-white">Cripta de la Vida</a>
+  <nav class="hidden lg:flex items-center space-x-8 text-sm text-gray-300">
+    <a href="#semillas" class="hover:text-white transition">Semillas</a>
+    <a href="#almacenamiento" class="hover:text-white transition">Almacenamiento</a>
+    <a href="#plagas" class="hover:text-white transition">Plagas</a>
+    <a href="#propuesta" class="hover:text-white transition">Propuesta</a>
+    <a href="#fuentes" class="hover:text-white underline underline-offset-4 font-medium">Fuentes</a>
+  </nav>
+  <button id="menu-btn" aria-label="Menú" class="lg:hidden p-2">
+    <div class="space-y-1.5 w-6"><span class="block h-0.5 bg-white"></span><span class="block h-0.5 bg-white"></span><span class="block h-0.5 bg-white"></span></div>
+  </button>
+</header>
+
+<div id="mobile-menu" class="fixed inset-0 bg-black/95 z-[60] hidden flex-col justify-center items-center space-y-6 text-xl">
+  <button id="close-menu" aria-label="Cerrar menú" class="absolute top-6 right-6 text-3xl text-gray-400 hover:text-white">&times;</button>
+  <a href="#semillas" class="text-gray-300 hover:text-white">Semillas</a>
+  <a href="#almacenamiento" class="text-gray-300 hover:text-white">Almacenamiento</a>
+  <a href="#plagas" class="text-gray-300 hover:text-white">Plagas</a>
+  <a href="#propuesta" class="text-gray-300 hover:text-white">Propuesta</a>
+  <a href="#fuentes" class="text-white font-semibold underline underline-offset-4">Fuentes</a>
+</div>
+
+<main>
+<!-- HERO -->
+<section id="inicio" class="max-w-7xl mx-auto px-6 md:px-12 pt-36 pb-16 lg:pt-44 lg:pb-24 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+  <div class="lg:col-span-7 rounded-2xl overflow-hidden shadow-2xl relative group fade">
+    <img src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&w=1000&q=80" onerror="this.onerror=null;this.src='https://placehold.co/1000x600/0f2a1c/ffffff?text=Semillas'" alt="Plántula brotando de la tierra" class="w-full h-[320px] md:h-[460px] object-cover group-hover:scale-105 transition duration-700">
+    <div class="absolute inset-0 bg-gradient-to-tr from-green-900/40 via-transparent to-blue-500/20 pointer-events-none"></div>
+  </div>
+  <div class="lg:col-span-5 space-y-6">
+    <p class="text-xs tracking-widest text-gray-400 split">Química, biología y sostenibilidad</p>
+    <h1 class="text-4xl md:text-6xl font-bold tracking-tight text-white leading-tight split">El futuro comienza en una semilla.</h1>
+    <p class="text-gray-400 text-sm md:text-base leading-relaxed fade">Una exploración sobre la conservación del germoplasma, la química que mantiene viva una semilla y las estrategias sostenibles para proteger los cultivos.</p>
+    <a href="#semillas" class="inline-block text-sm font-semibold tracking-wider text-white border-b border-white pb-1 hover:border-gray-400 hover:text-gray-300 transition fade">Explorar la investigación</a>
+  </div>
+</section>
+
+<!-- SEMILLAS -->
+<section id="semillas" class="max-w-7xl mx-auto px-6 md:px-12 py-16 lg:py-24 border-t border-white/10">
+  <div class="text-center space-y-3 mb-16">
+    <p class="text-xs tracking-widest text-gray-400 split">Cripta de la vida</p>
+    <h2 class="text-3xl md:text-5xl font-bold text-white split">La semilla entra en pausa</h2>
+    <p class="text-gray-400 text-sm md:text-base leading-relaxed max-w-2xl mx-auto fade">Al madurar, una semilla pierde gran parte de su agua y reduce drásticamente su metabolismo. No está muerta: espera las condiciones adecuadas para volver a funcionar.</p>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div class="bg-cardBg border border-white/5 rounded-2xl p-8 h-[300px] flex flex-col justify-between hover:border-white/20 transition fade">
+      <div class="relative w-full h-24 flex items-center justify-center"><div class="absolute w-12 h-12 border border-blue-400/80 rounded-sm -translate-x-4 -translate-y-2"></div><div class="absolute w-14 h-14 bg-blue-600/30 border border-blue-500 rounded-sm translate-x-4 translate-y-2"></div></div>
+      <div class="space-y-2"><h3 class="text-lg font-semibold text-white">Ácido abscísico</h3><p class="text-gray-400 text-sm leading-relaxed">El ABA mantiene la latencia e induce mecanismos protectores frente a la deshidratación.</p></div>
+    </div>
+    <div class="bg-cardBg border border-white/5 rounded-2xl p-8 h-[300px] flex flex-col justify-between hover:border-white/20 transition fade">
+      <div class="relative w-full h-24 flex items-center justify-center"><div class="absolute w-12 h-12 border border-orange-400/80 rotate-45"></div><div class="absolute w-10 h-10 bg-orange-600 rotate-45 translate-x-2 -translate-y-2"></div></div>
+      <div class="space-y-2"><h3 class="text-lg font-semibold text-white">Proteínas LEA</h3><p class="text-gray-400 text-sm leading-relaxed">Protegen membranas y proteínas durante el proceso de pérdida de agua.</p></div>
+    </div>
+    <div class="bg-cardBg border border-white/5 rounded-2xl p-8 h-[300px] flex flex-col justify-between hover:border-white/20 transition fade">
+      <div class="relative w-full h-24 flex items-center justify-center"><div class="absolute w-14 h-14 bg-pink-600 rounded-sm"></div></div>
+      <div class="space-y-2"><h3 class="text-lg font-semibold text-white">Estado vítreo</h3><p class="text-gray-400 text-sm leading-relaxed">Sacarosa, trehalosa y rafinosa forman una matriz que inmoviliza moléculas y ralentiza las reacciones.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ANATOMÍA -->
+<section class="max-w-7xl mx-auto px-6 md:px-12 py-16 lg:py-24 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+  <div class="lg:col-span-5 rounded-2xl overflow-hidden shadow-2xl fade">
+    <img src="https://cdn.livephysics.com/infographics/biology-seed-structure-and-germination.png" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1471193945509-9ad0617afabf?auto=format&fit=crop&w=800&q=80'" alt="Anatomía y germinación de una semilla" class="w-full h-[400px] md:h-[500px] object-cover">
+  </div>
+  <div class="lg:col-span-7 space-y-6 lg:pl-8">
+    <h2 class="text-3xl md:text-4xl font-bold text-white split">Una pequeña cápsula de información</h2>
+    <p class="text-gray-400 text-sm md:text-base leading-relaxed fade">El embrión, las reservas nutritivas y las estructuras protectoras trabajan juntos para mantener la viabilidad de la semilla.</p>
+    <div class="space-y-3 pt-2">
+      <h3 class="text-white font-semibold text-lg">Partes principales:</h3>
+      <ul class="space-y-2.5 text-gray-300 text-sm md:text-base fade">
+        <li class="flex items-start space-x-3"><span class="w-1.5 h-1.5 mt-2 bg-gray-400 rounded-full shrink-0"></span><span><strong class="text-white">Embrión:</strong> contiene la futura planta.</span></li>
+        <li class="flex items-start space-x-3"><span class="w-1.5 h-1.5 mt-2 bg-gray-400 rounded-full shrink-0"></span><span><strong class="text-white">Endospermo:</strong> almacena nutrientes.</span></li>
+        <li class="flex items-start space-x-3"><span class="w-1.5 h-1.5 mt-2 bg-gray-400 rounded-full shrink-0"></span><span><strong class="text-white">Cubierta:</strong> protege frente al ambiente.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ETAPAS DE GERMINACIÓN -->
+<section class="max-w-7xl mx-auto px-6 md:px-12 py-16 lg:py-24 border-t border-white/10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+  <div class="lg:col-span-7 space-y-6 order-2 lg:order-1">
+    <h2 class="text-3xl md:text-4xl font-bold text-white split">Del reposo a la planta: etapas de la germinación</h2>
+    <div class="flex flex-wrap gap-2" role="tablist" id="germ-tabs">
+      <button class="tab-btn" data-i="0">Imbibición</button><button class="tab-btn" data-i="1">Activación</button><button class="tab-btn" data-i="2">Radícula</button><button class="tab-btn" data-i="3">Plántula</button>
+    </div>
+    <div class="bg-cardBg border border-white/5 rounded-2xl p-8 min-h-[190px]" id="germ-panel">
+      <h3 class="text-lg font-semibold text-white mb-2" id="germ-title"></h3>
+      <p class="text-gray-400 text-sm md:text-base leading-relaxed" id="germ-text"></p>
+    </div>
+  </div>
+  <div class="lg:col-span-5 rounded-2xl overflow-hidden shadow-2xl order-1 lg:order-2 fade">
+    <img src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=800&q=80" onerror="this.onerror=null;this.src='https://placehold.co/800x600/0f2a1c/ffffff?text=Germinacion'" alt="Plántula emergiendo del suelo" class="w-full h-[380px] object-cover">
+  </div>
+</section>
+
+<!-- TIPOS DE SEMILLAS -->
+<section class="max-w-7xl mx-auto px-6 md:px-12 py-16 lg:py-24 border-t border-white/10">
+  <div class="text-center space-y-3 mb-12">
+    <p class="text-xs tracking-widest text-gray-400 split">Clasificación según su comportamiento</p>
+    <h2 class="text-3xl md:text-5xl font-bold text-white split">No todas las semillas se guardan igual</h2>
+  </div>
+  <div class="flex justify-center flex-wrap gap-2 mb-8" id="type-tabs">
+    <button class="tab-btn" data-i="0">Ortodoxas</button><button class="tab-btn" data-i="1">Intermedias</button><button class="tab-btn" data-i="2">Recalcitrantes</button>
+  </div>
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+    <div class="lg:col-span-7 bg-cardBg border border-white/5 rounded-2xl p-8 md:p-10">
+      <h3 class="text-2xl font-semibold text-white mb-3" id="type-title"></h3>
+      <p class="text-gray-400 text-sm md:text-base leading-relaxed mb-6" id="type-text"></p>
+      <dl class="grid grid-cols-2 gap-y-3 text-sm" id="type-data"></dl>
+    </div>
+    <div class="lg:col-span-5 rounded-2xl overflow-hidden shadow-2xl">
+      <img id="type-img" src="https://images.unsplash.com/photo-1471193945509-9ad0617afabf?auto=format&fit=crop&w=800&q=80" onerror="this.onerror=null;this.src='https://placehold.co/800x600/1e293b/94a3b8?text=Semillas'" alt="Semillas de distintos tipos" class="w-full h-full min-h-[300px] object-cover">
+    </div>
+  </div>
+</section>
+
+<!-- ENEMIGO -->
+<section class="max-w-7xl mx-auto px-6 md:px-12 py-16 lg:py-24 border-t border-white/10">
+  <div class="text-center space-y-3 mb-16">
+    <p class="text-xs tracking-widest text-gray-400 split">El enemigo</p>
+    <h2 class="text-3xl md:text-5xl font-bold text-white split">¿Qué mata lentamente a una semilla?</h2>
+    <p class="text-gray-400 text-sm md:text-base leading-relaxed max-w-2xl mx-auto fade">Humedad, temperatura y oxidación pueden transformar una semilla viable en una colección de moléculas dañadas.</p>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div class="bg-cardBg border border-white/5 rounded-2xl p-8 hover:border-white/20 transition fade"><h3 class="text-lg font-semibold text-white mb-3">Humedad</h3><p class="text-gray-400 text-sm leading-relaxed">Reactiva enzimas y respiración. Una humedad elevada favorece además hongos y calentamiento.</p></div>
+    <div class="bg-cardBg border border-white/5 rounded-2xl p-8 hover:border-white/20 transition fade"><h3 class="text-lg font-semibold text-white mb-3">Temperatura</h3><p class="text-gray-400 text-sm leading-relaxed">Las temperaturas altas aceleran las reacciones químicas responsables del deterioro.</p></div>
+    <div class="bg-cardBg border border-white/5 rounded-2xl p-8 hover:border-white/20 transition fade"><h3 class="text-lg font-semibold text-white mb-3">Oxidación</h3><p class="text-gray-400 text-sm leading-relaxed">La peroxidación de lípidos genera productos que pueden dañar membranas y material genético.</p></div>
+  </div>
+</section>
+
+<!-- ALMACENAMIENTO -->
+<section id="almacenamiento" class="max-w-7xl mx-auto px-6 md:px-12 py-16 lg:py-24 border-t border-white/10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+  <div class="lg:col-span-5 lg:sticky lg:top-28 space-y-6">
+    <h2 class="text-3xl md:text-5xl font-bold text-white split">Diseñar el clima de la semilla</h2>
+    <p class="text-gray-400 text-sm md:text-base leading-relaxed fade">La conservación de semillas ortodoxas depende principalmente de controlar la humedad y la temperatura. Menos agua y menos calor significan menor velocidad de reacción y mayor vida.</p>
+    <div class="rounded-2xl overflow-hidden shadow-2xl fade">
+      <img src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=800&q=80" onerror="this.onerror=null;this.src='https://placehold.co/800x500/1e293b/94a3b8?text=Banco+de+semillas'" alt="Semillas almacenadas en recipientes" class="w-full h-[280px] object-cover">
+    </div>
+  </div>
+  <div class="lg:col-span-7 space-y-8">
+    <div class="bg-cardBg border border-white/5 rounded-2xl p-8 fade">
+      <h3 class="text-lg font-semibold text-white mb-1">Corto plazo</h3><p class="text-xs text-gray-500 mb-5">1 a 3 años</p>
+      <dl class="grid grid-cols-2 gap-y-3 text-sm"><dt class="text-gray-500">Temperatura</dt><dd class="text-gray-200">15 a 20 °C</dd><dt class="text-gray-500">Humedad relativa</dt><dd class="text-gray-200">30 a 40 %</dd><dt class="text-gray-500">Humedad de semilla</dt><dd class="text-gray-200">8 a 10 %</dd><dt class="text-gray-500">Contenedor</dt><dd class="text-gray-200">Vidrio hermético con sílica gel</dd></dl>
+    </div>
+    <div class="bg-cardBg border border-white/5 rounded-2xl p-8 fade">
+      <h3 class="text-lg font-semibold text-white mb-1">Mediano plazo</h3><p class="text-xs text-gray-500 mb-5">3 a 10 años</p>
+      <dl class="grid grid-cols-2 gap-y-3 text-sm"><dt class="text-gray-500">Temperatura</dt><dd class="text-gray-200">0 a 5 °C</dd><dt class="text-gray-500">Humedad relativa</dt><dd class="text-gray-200">20 a 30 %</dd><dt class="text-gray-500">Humedad de semilla</dt><dd class="text-gray-200">5 a 7 %</dd><dt class="text-gray-500">Contenedor</dt><dd class="text-gray-200">Aluminio o frasco hermético</dd></dl>
+    </div>
+    <div class="bg-cardBg border border-white/5 rounded-2xl p-8 fade">
+      <h3 class="text-lg font-semibold text-white mb-1">Largo plazo</h3><p class="text-xs text-gray-500 mb-5">Décadas</p>
+      <dl class="grid grid-cols-2 gap-y-3 text-sm"><dt class="text-gray-500">Temperatura</dt><dd class="text-gray-200">−18 °C</dd><dt class="text-gray-500">Humedad relativa</dt><dd class="text-gray-200">Cerca de 15 %</dd><dt class="text-gray-500">Humedad de semilla</dt><dd class="text-gray-200">3 a 7 %</dd><dt class="text-gray-500">Contenedor</dt><dd class="text-gray-200">Bolsa laminada sellada</dd></dl>
+    </div>
+  </div>
+</section>
+
+<!-- SIMULADOR -->
+<section class="max-w-7xl mx-auto px-6 md:px-12 py-16 lg:py-24 border-t border-white/10">
+  <div class="text-center space-y-3 mb-12">
+    <p class="text-xs tracking-widest text-gray-400 split">Simulador</p>
+    <h2 class="text-3xl md:text-5xl font-bold text-white split">¿Cuánto vive una semilla en tu almacén?</h2>
+    <p class="text-gray-400 text-sm md:text-base leading-relaxed max-w-2xl mx-auto fade">Basado en la regla de Harrington: por cada 1 % menos de humedad en la semilla y por cada 5,6 °C menos de temperatura, la longevidad se duplica. Es un modelo didáctico para semillas ortodoxas, no una garantía.</p>
+  </div>
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <div class="lg:col-span-6 bg-cardBg border border-white/5 rounded-2xl p-8 space-y-8">
+      <div>
+        <div class="flex justify-between text-sm mb-3"><label for="rt" class="text-gray-300">Temperatura</label><strong id="vt" class="text-white"></strong></div>
+        <input id="rt" type="range" min="-20" max="35" value="20" class="w-full accent-green-400">
+      </div>
+      <div>
+        <div class="flex justify-between text-sm mb-3"><label for="rm" class="text-gray-300">Humedad de la semilla</label><strong id="vm" class="text-white"></strong></div>
+        <input id="rm" type="range" min="3" max="14" step="0.5" value="10" class="w-full accent-green-400">
+      </div>
+      <div class="rounded-xl overflow-hidden"><img src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=800&q=80" onerror="this.style.display='none'" alt="Almacenamiento de semillas" class="w-full h-[160px] object-cover"></div>
+    </div>
+    <div class="lg:col-span-6 bg-cardBg border border-white/5 rounded-2xl p-8 flex flex-col justify-between">
+      <div>
+        <p class="text-xs tracking-widest text-gray-400 mb-2">Longevidad relativa estimada</p>
+        <p class="text-5xl md:text-6xl font-bold text-white" id="out-years"></p>
+        <div class="h-2 bg-white/10 rounded-full mt-6 overflow-hidden"><div id="out-bar" class="h-full bg-green-400 rounded-full transition-all duration-500" style="width:0"></div></div>
+        <p class="mt-6 text-sm text-gray-400 leading-relaxed" id="out-msg"></p>
+      </div>
+      <p class="text-xs text-gray-500 mt-6">Referencia: 1 año a 30 °C y 14 % de humedad. Regla práctica: temperatura (°C) + humedad relativa (%) debería ser menor a 100.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PLAGAS -->
+<section id="plagas" class="max-w-7xl mx-auto px-6 md:px-12 py-16 lg:py-24 border-t border-white/10">
+  <div class="text-center space-y-3 mb-16">
+    <p class="text-xs tracking-widest text-gray-400 split">Escudo bioquímico</p>
+    <h2 class="text-3xl md:text-5xl font-bold text-white split">Tres armas, tres mecanismos</h2>
+    <p class="text-gray-400 text-sm md:text-base leading-relaxed max-w-2xl mx-auto fade">No todos los productos destinados al control de organismos actúan de la misma forma.</p>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div class="bg-cardBg border border-white/5 rounded-2xl p-8 h-[320px] flex flex-col justify-between hover:border-white/20 transition fade">
+      <div class="relative w-full h-24 flex items-center justify-center"><div class="absolute w-12 h-12 border border-blue-400/80 rounded-sm -translate-x-4 -translate-y-2"></div><div class="absolute w-14 h-14 bg-blue-600/30 border border-blue-500 rounded-sm translate-x-4 translate-y-2"></div></div>
+      <div class="space-y-2"><h3 class="text-lg font-semibold text-white">Desinfectantes</h3><p class="text-gray-400 text-sm leading-relaxed">Hipoclorito, peróxido y alcohol pueden oxidar o desnaturalizar componentes celulares de microorganismos.</p></div>
+    </div>
+    <div class="bg-cardBg border border-white/5 rounded-2xl p-8 h-[320px] flex flex-col justify-between hover:border-white/20 transition fade">
+      <div class="relative w-full h-24 flex items-center justify-center"><div class="absolute w-12 h-12 border border-orange-400/80 rotate-45"></div><div class="absolute w-10 h-10 bg-orange-600 rotate-45 translate-x-2 -translate-y-2"></div></div>
+      <div class="space-y-2"><h3 class="text-lg font-semibold text-white">Repelentes</h3><p class="text-gray-400 text-sm leading-relaxed">Extractos y aceites modifican el olor o sabor de las plantas y reducen la alimentación o la puesta de huevos.</p></div>
+    </div>
+    <div class="bg-cardBg border border-white/5 rounded-2xl p-8 h-[320px] flex flex-col justify-between hover:border-white/20 transition fade">
+      <div class="relative w-full h-24 flex items-center justify-center"><div class="absolute w-14 h-14 bg-pink-600 rounded-sm"></div></div>
+      <div class="space-y-2"><h3 class="text-lg font-semibold text-white">Plaguicidas</h3><p class="text-gray-400 text-sm leading-relaxed">Pueden actuar sobre el sistema nervioso, el crecimiento o la alimentación de los organismos objetivo.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SINTÉTICO VS BOTÁNICO -->
+<section class="max-w-7xl mx-auto px-6 md:px-12 py-16 lg:py-24 border-t border-white/10">
+  <div class="text-center space-y-3 mb-16">
+    <p class="text-xs tracking-widest text-gray-400 split">Impacto bioquímico</p>
+    <h2 class="text-3xl md:text-5xl font-bold text-white split">Sintético frente a botánico</h2>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div class="bg-cardBg border border-white/5 rounded-2xl p-8 md:p-10 hover:border-white/20 transition fade">
+      <p class="text-xs tracking-widest text-pink-400 mb-3">Sintético</p>
+      <h3 class="text-2xl font-semibold text-white mb-4">Organofosforados</h3>
+      <p class="text-gray-400 text-sm md:text-base leading-relaxed">La acetilcolinesterasa degrada la acetilcolina después de un impulso nervioso. Los organofosforados pueden inhibir esta enzima, provocando acumulación de acetilcolina y una alteración intensa de la transmisión nerviosa.</p>
+    </div>
+    <div class="bg-cardBg border border-white/5 rounded-2xl p-8 md:p-10 hover:border-white/20 transition fade">
+      <p class="text-xs tracking-widest text-green-400 mb-3">Botánico</p>
+      <h3 class="text-2xl font-semibold text-white mb-4">Neem y azadiractina</h3>
+      <p class="text-gray-400 text-sm md:text-base leading-relaxed">La azadiractina interfiere con procesos de crecimiento y muda de ciertos insectos, y también puede reducir su alimentación.</p>
+    </div>
+  </div>
+</section>
+
+<!-- MIP -->
+<section class="max-w-7xl mx-auto px-6 md:px-12 py-16 lg:py-24 border-t border-white/10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+  <div class="lg:col-span-5 space-y-6 lg:sticky lg:top-28">
+    <h2 class="text-3xl md:text-4xl font-bold text-white split">Manejo integrado de plagas</h2>
+    <p class="text-gray-400 text-sm md:text-base leading-relaxed fade">El MIP combina varias estrategias en orden de menor a mayor impacto. La química sintética es el último recurso, no el primero.</p>
+    <div class="rounded-2xl overflow-hidden shadow-2xl fade"><img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=80" onerror="this.onerror=null;this.src='https://placehold.co/800x500/0f2a1c/ffffff?text=Cultivo'" alt="Campo de cultivo" class="w-full h-[280px] object-cover"></div>
+  </div>
+  <div class="lg:col-span-7 space-y-3 fade" id="mip">
+    <details class="bg-cardBg border border-white/5 rounded-2xl p-6" open><summary class="cursor-pointer font-semibold text-white">1. Prevención y monitoreo</summary><p class="mt-3 text-gray-400 text-sm leading-relaxed">Rotación de cultivos, variedades resistentes, semilla sana y revisión periódica del cultivo para decidir con datos y no por costumbre.</p></details>
+    <details class="bg-cardBg border border-white/5 rounded-2xl p-6"><summary class="cursor-pointer font-semibold text-white">2. Control cultural y físico</summary><p class="mt-3 text-gray-400 text-sm leading-relaxed">Retirar residuos infestados, usar trampas y barreras, regular el riego y la densidad de siembra para reducir las condiciones favorables a la plaga.</p></details>
+    <details class="bg-cardBg border border-white/5 rounded-2xl p-6"><summary class="cursor-pointer font-semibold text-white">3. Control biológico</summary><p class="mt-3 text-gray-400 text-sm leading-relaxed">Uso de enemigos naturales como catarinas, avispas parasitoides y hongos entomopatógenos, además de conservar los polinizadores.</p></details>
+    <details class="bg-cardBg border border-white/5 rounded-2xl p-6"><summary class="cursor-pointer font-semibold text-white">4. Productos botánicos</summary><p class="mt-3 text-gray-400 text-sm leading-relaxed">Extractos como neem o la mezcla de ajo y chile reducen la presión de la plaga con menor persistencia, aunque requieren pruebas y dosis correctas.</p></details>
+    <details class="bg-cardBg border border-white/5 rounded-2xl p-6"><summary class="cursor-pointer font-semibold text-white">5. Plaguicidas sintéticos</summary><p class="mt-3 text-gray-400 text-sm leading-relaxed">Solo cuando el umbral de daño lo justifica, con producto selectivo, dosis exacta, equipo de protección y respeto de los periodos de carencia.</p></details>
+  </div>
+</section>
+
+<!-- GALERÍA -->
+<section class="max-w-7xl mx-auto px-6 md:px-12 py-16 lg:py-24 border-t border-white/10">
+  <div class="text-center space-y-3 mb-12"><h2 class="text-3xl md:text-5xl font-bold text-white split">De la colección al campo</h2></div>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <figure class="fade"><div class="rounded-2xl overflow-hidden"><img src="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&w=700&q=80" onerror="this.onerror=null;this.src='https://placehold.co/700x500/1e293b/94a3b8?text=Laboratorio'" alt="Análisis en laboratorio" class="w-full h-[260px] object-cover hover:scale-105 transition duration-700"></div><figcaption class="mt-3 text-sm text-gray-400"><strong class="text-white">Análisis.</strong> Pruebas de germinación y humedad verifican la viabilidad.</figcaption></figure>
+    <figure class="fade"><div class="rounded-2xl overflow-hidden"><img src="https://images.unsplash.com/photo-1592982537447-7440770cbfc9?auto=format&fit=crop&w=700&q=80" onerror="this.onerror=null;this.src='https://placehold.co/700x500/1e293b/94a3b8?text=Invernadero'" alt="Invernadero con plántulas" class="w-full h-[260px] object-cover hover:scale-105 transition duration-700"></div><figcaption class="mt-3 text-sm text-gray-400"><strong class="text-white">Regeneración.</strong> Se siembran muestras para renovar la colección.</figcaption></figure>
+    <figure class="fade"><div class="rounded-2xl overflow-hidden"><img src="https://images.unsplash.com/photo-1574943320219-553eb213f72d?auto=format&fit=crop&w=700&q=80" onerror="this.onerror=null;this.src='https://placehold.co/700x500/1e293b/94a3b8?text=Cultivo'" alt="Cultivo en campo" class="w-full h-[260px] object-cover hover:scale-105 transition duration-700"></div><figcaption class="mt-3 text-sm text-gray-400"><strong class="text-white">Cultivo.</strong> La diversidad conservada vuelve al campo del agricultor.</figcaption></figure>
+  </div>
+</section>
+
+<!-- IMPACTO AMBIENTAL -->
+<section class="max-w-7xl mx-auto px-6 md:px-12 py-16 lg:py-24 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+  <div class="lg:col-span-7 space-y-6">
+    <h2 class="text-3xl md:text-4xl font-bold text-white split">La química también deja una huella</h2>
+    <p class="text-gray-400 text-sm md:text-base leading-relaxed fade">El control de plagas debe considerar tanto la eficacia como los organismos no objetivo y el ambiente.</p>
+    <ul class="space-y-3 text-gray-300 text-sm md:text-base fade">
+      <li class="flex items-start space-x-3"><span class="w-1.5 h-1.5 mt-2 bg-gray-400 rounded-full shrink-0"></span><span><strong class="text-white">Agua y suelo:</strong> algunos compuestos pueden persistir y desplazarse.</span></li>
+      <li class="flex items-start space-x-3"><span class="w-1.5 h-1.5 mt-2 bg-gray-400 rounded-full shrink-0"></span><span><strong class="text-white">Polinizadores:</strong> una aplicación incorrecta puede afectar organismos beneficiosos.</span></li>
+      <li class="flex items-start space-x-3"><span class="w-1.5 h-1.5 mt-2 bg-gray-400 rounded-full shrink-0"></span><span><strong class="text-white">Persistencia:</strong> el impacto depende de la sustancia y de las condiciones.</span></li>
+    </ul>
+  </div>
+  <div class="lg:col-span-5 rounded-2xl overflow-hidden shadow-2xl fade">
+    <img src="https://images.unsplash.com/photo-1470058869958-2a77ade41c02?auto=format&fit=crop&w=800&q=80" onerror="this.onerror=null;this.src='https://placehold.co/800x600/0f2a1c/ffffff?text=Abeja+y+flor'" alt="Abeja polinizando una flor" class="w-full h-[400px] object-cover">
+  </div>
+</section>
+
+<!-- PROPUESTA -->
+<section id="propuesta" class="max-w-7xl mx-auto px-6 md:px-12 py-16 lg:py-24 border-t border-white/10">
+  <div class="text-center space-y-3 mb-16">
+    <p class="text-xs tracking-widest text-gray-400 split">Propuesta práctica</p>
+    <h2 class="text-3xl md:text-5xl font-bold text-white split">Ajo, chile y jabón</h2>
+    <p class="text-gray-400 text-sm md:text-base leading-relaxed max-w-2xl mx-auto fade">Un manejo complementario sencillo para reducir la presión de determinadas plagas.</p>
+  </div>
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <div class="lg:col-span-5 space-y-6">
+      <div class="rounded-2xl overflow-hidden shadow-2xl fade">
+        <img src="https://images.unsplash.com/photo-1540148426945-6cf22a6b2383?auto=format&fit=crop&w=800&q=80" onerror="this.onerror=null;this.src='https://placehold.co/800x400/1e293b/94a3b8?text=Ajo+y+chile'" alt="Ajo y chiles frescos" class="w-full h-[240px] object-cover">
+      </div>
+      <div class="bg-cardBg border border-white/5 rounded-2xl p-8 fade">
+        <h3 class="text-lg font-semibold text-white mb-4">Ingredientes para 1 litro</h3>
+        <div class="divide-y divide-white/10 text-sm">
+          <div class="flex justify-between py-3"><span class="text-gray-400">Ajo</span><strong class="text-white">50 g</strong></div>
+          <div class="flex justify-between py-3"><span class="text-gray-400">Chile picante</span><strong class="text-white">2 unidades</strong></div>
+          <div class="flex justify-between py-3"><span class="text-gray-400">Agua</span><strong class="text-white">1 litro</strong></div>
+          <div class="flex justify-between py-3"><span class="text-gray-400">Jabón neutro</span><strong class="text-white">1 cucharadita</strong></div>
+        </div>
+      </div>
+    </div>
+    <div class="lg:col-span-7 space-y-4">
+      <div class="flex items-start gap-5 bg-cardBg border border-white/5 rounded-2xl p-6 fade"><span class="w-9 h-9 shrink-0 rounded-full bg-white text-black font-bold grid place-items-center">1</span><p class="text-gray-400 text-sm md:text-base leading-relaxed">Licúa el ajo y el chile con una parte del agua.</p></div>
+      <div class="flex items-start gap-5 bg-cardBg border border-white/5 rounded-2xl p-6 fade"><span class="w-9 h-9 shrink-0 rounded-full bg-white text-black font-bold grid place-items-center">2</span><p class="text-gray-400 text-sm md:text-base leading-relaxed">Añade el resto del agua y deja reposar 24 horas en un recipiente tapado.</p></div>
+      <div class="flex items-start gap-5 bg-cardBg border border-white/5 rounded-2xl p-6 fade"><span class="w-9 h-9 shrink-0 rounded-full bg-white text-black font-bold grid place-items-center">3</span><p class="text-gray-400 text-sm md:text-base leading-relaxed">Cuela la mezcla utilizando una tela.</p></div>
+      <div class="flex items-start gap-5 bg-cardBg border border-white/5 rounded-2xl p-6 fade"><span class="w-9 h-9 shrink-0 rounded-full bg-white text-black font-bold grid place-items-center">4</span><p class="text-gray-400 text-sm md:text-base leading-relaxed">Añade el jabón neutro y mezcla suavemente.</p></div>
+      <div class="flex items-start gap-5 bg-cardBg border border-white/5 rounded-2xl p-6 fade"><span class="w-9 h-9 shrink-0 rounded-full bg-white text-black font-bold grid place-items-center">5</span><p class="text-gray-400 text-sm md:text-base leading-relaxed">Diluye una parte de la preparación en cuatro partes de agua y aplica al atardecer.</p></div>
+      <div class="border border-orange-400/30 bg-orange-500/5 rounded-2xl p-6 text-sm md:text-base text-orange-200 leading-relaxed fade"><strong>Seguridad:</strong> usa guantes, evita el contacto con los ojos y prueba primero sobre una pequeña zona de la planta. La respuesta puede variar según la especie.</div>
+    </div>
+  </div>
+</section>
+
+<!-- QUÍMICA DE LA PROPUESTA -->
+<section class="max-w-7xl mx-auto px-6 md:px-12 py-16 lg:py-24 border-t border-white/10">
+  <div class="text-center space-y-3 mb-16">
+    <p class="text-xs tracking-widest text-gray-400 split">Química de la propuesta</p>
+    <h2 class="text-3xl md:text-5xl font-bold text-white split">Tres componentes, tres funciones</h2>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div class="bg-cardBg border border-white/5 rounded-2xl p-8 hover:border-white/20 transition fade"><h3 class="text-lg font-semibold text-white mb-3">Alicina</h3><p class="text-gray-400 text-sm leading-relaxed">Se forma al triturar el ajo mediante una reacción enzimática con la alinasa. Es un compuesto azufrado característico.</p></div>
+    <div class="bg-cardBg border border-white/5 rounded-2xl p-8 hover:border-white/20 transition fade"><h3 class="text-lg font-semibold text-white mb-3">Capsaicina</h3><p class="text-gray-400 text-sm leading-relaxed">El compuesto responsable del picor puede actuar como disuasorio para determinados organismos.</p></div>
+    <div class="bg-cardBg border border-white/5 rounded-2xl p-8 hover:border-white/20 transition fade"><h3 class="text-lg font-semibold text-white mb-3">Jabón neutro</h3><p class="text-gray-400 text-sm leading-relaxed">Reduce la tensión superficial del agua y favorece la cobertura de la superficie vegetal.</p></div>
+  </div>
+</section>
+
+<!-- FUENTES -->
+<section id="fuentes" class="max-w-7xl mx-auto px-6 md:px-12 py-16 lg:py-24 border-t border-white/10">
+  <div class="text-center space-y-3 mb-16">
+    <p class="text-xs tracking-widest text-gray-400 split">Fuentes y recursos</p>
+    <h2 class="text-3xl md:text-5xl font-bold text-white split">La ciencia necesita referencias</h2>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div class="bg-cardBg border border-white/5 rounded-2xl p-8 fade"><h3 class="text-lg font-semibold text-white mb-2">FAO: Recursos fitogenéticos</h3><p class="text-gray-400 text-sm leading-relaxed mb-5">Información y estándares sobre conservación de recursos genéticos vegetales.</p><a target="_blank" rel="noopener" href="https://www.fao.org/cgrfa/topics/plant-genetic-resources/practical-guides/" class="text-sm font-semibold text-white border-b border-white pb-1 hover:text-gray-300">Consultar FAO</a></div>
+    <div class="bg-cardBg border border-white/5 rounded-2xl p-8 fade"><h3 class="text-lg font-semibold text-white mb-2">FAO: Almacenamiento de semillas</h3><p class="text-gray-400 text-sm leading-relaxed mb-5">Recomendaciones sobre humedad, temperatura, recipientes y viabilidad.</p><a target="_blank" rel="noopener" href="https://www.fao.org/4/ad226e/AD226E06.htm" class="text-sm font-semibold text-white border-b border-white pb-1 hover:text-gray-300">Ver recurso</a></div>
+    <div class="bg-cardBg border border-white/5 rounded-2xl p-8 fade"><h3 class="text-lg font-semibold text-white mb-2">Anatomía de la semilla</h3><p class="text-gray-400 text-sm leading-relaxed mb-5">Infografía utilizada como apoyo para la sección de anatomía y germinación.</p><a target="_blank" rel="noopener" href="https://livephysics.com/infographics/biology-seed-structure-and-germination/" class="text-sm font-semibold text-white border-b border-white pb-1 hover:text-gray-300">Ver imagen</a></div>
+    <div class="bg-cardBg border border-white/5 rounded-2xl p-8 fade"><h3 class="text-lg font-semibold text-white mb-2">Créditos de imágenes</h3><p class="text-gray-400 text-sm leading-relaxed">Las demás fotografías provienen de Unsplash. Las imágenes externas deben conservar sus atribuciones y condiciones de uso.</p></div>
+  </div>
+</section>
+</main>
+
+<footer class="border-t border-white/10 py-12 px-6 md:px-12 text-center text-sm text-gray-500 space-y-2">
+  <p class="text-white font-semibold text-lg">Cripta de la Vida</p>
+  <p>Actividad integradora de Química, IV periodo</p>
+  <p>Francisco Dario Orellana y Diego Ulises Mayorga Calvio</p>
+</footer>
+
+<script>
+// Menú móvil
+const mm=document.getElementById('mobile-menu');
+document.getElementById('menu-btn').onclick=()=>{mm.classList.remove('hidden');mm.classList.add('flex')};
+const closeM=()=>{mm.classList.add('hidden');mm.classList.remove('flex')};
+document.getElementById('close-menu').onclick=closeM;
+mm.querySelectorAll('a').forEach(a=>a.onclick=closeM);
+
+// Barra de progreso
+const bar=document.getElementById('progress');
+addEventListener('scroll',()=>{const h=document.documentElement.scrollHeight-innerHeight;bar.style.width=(scrollY/h*100)+'%'},{passive:true});
+
+// Dividir texto en letras animadas
+document.querySelectorAll('.split').forEach(el=>{
+  const text=el.textContent.trim().replace(/\s+/g,' ');
+  el.setAttribute('aria-label',text);
+  el.textContent='';
+  let i=0;
+  text.split(' ').forEach((w,wi,arr)=>{
+    const ws=document.createElement('span');ws.className='word';ws.setAttribute('aria-hidden','true');
+    [...w].forEach(c=>{const s=document.createElement('span');s.className='ch';s.style.setProperty('--i',i++);s.textContent=c;ws.appendChild(s)});
+    el.appendChild(ws);
+    if(wi<arr.length-1){el.appendChild(document.createTextNode(' '));i++}
+  });
+});
+
+// Pestañas
+function tabs(id,render){
+  const btns=[...document.querySelectorAll('#'+id+' .tab-btn')];
+  const set=i=>{btns.forEach((b,k)=>b.classList.toggle('on',k===i));render(i)};
+  btns.forEach((b,k)=>b.onclick=()=>set(k));set(0);
+}
+const G=[
+ ['1. Imbibición','La semilla seca absorbe agua rápidamente. Los tejidos se hidratan, la cubierta se ablanda y la semilla se hincha. Es un proceso físico que ocurre incluso en semillas no viables.'],
+ ['2. Activación metabólica','Se reanudan la respiración y la síntesis de proteínas. Las giberelinas estimulan enzimas como la amilasa, que degradan el almidón de las reservas en azúcares utilizables.'],
+ ['3. Emergencia de la radícula','Las células del embrión se alargan y la raíz primaria rompe la cubierta. Este es el criterio que se usa en los laboratorios para considerar que una semilla germinó.'],
+ ['4. Plántula','La raíz se ancla y el tallo emerge hacia la luz. Cuando se agotan las reservas, la plántula comienza la fotosíntesis y se vuelve autótrofa.']];
+tabs('germ-tabs',i=>{document.getElementById('germ-title').textContent=G[i][0];document.getElementById('germ-text').textContent=G[i][1]});
+const T=[
+ ['Semillas ortodoxas','Toleran secarse hasta 3 a 7 % de humedad y congelarse sin perder viabilidad. Son la base de los bancos de germoplasma.',[['Ejemplos','Maíz, frijol, trigo, tomate'],['Humedad segura','3 a 7 %'],['Conservación','−18 °C, décadas'],['Imagen','https://images.unsplash.com/photo-1471193945509-9ad0617afabf?auto=format&fit=crop&w=800&q=80']]],
+ ['Semillas intermedias','Resisten cierta desecación, pero no la congelación prolongada. Requieren condiciones más cuidadosas y duran menos.',[['Ejemplos','Café, papaya, cítricos'],['Humedad segura','10 a 12 %'],['Conservación','5 a 10 °C, años'],['Imagen','https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=800&q=80']]],
+ ['Semillas recalcitrantes','No toleran la desecación: mueren si pierden humedad. No pueden guardarse en bancos convencionales y se conservan en campo o con criopreservación.',[['Ejemplos','Cacao, mango, aguacate'],['Humedad segura','Más de 30 %'],['Conservación','Meses, o criopreservación'],['Imagen','https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?auto=format&fit=crop&w=800&q=80']]]];
+tabs('type-tabs',i=>{
+  const t=T[i];document.getElementById('type-title').textContent=t[0];document.getElementById('type-text').textContent=t[1];
+  document.getElementById('type-data').innerHTML=t[2].slice(0,3).map(r=>`<dt class="text-gray-500">${r[0]}</dt><dd class="text-gray-200">${r[1]}</dd>`).join('');
+  const im=document.getElementById('type-img');im.style.opacity=0;setTimeout(()=>{im.src=t[2][3][1];im.style.opacity=1},200);
+});
+document.getElementById('type-img').style.transition='opacity .3s';
+
+// Simulador de longevidad (regla de Harrington)
+const rt=document.getElementById('rt'),rm=document.getElementById('rm');
+function sim(){
+  const T=+rt.value,M=+rm.value;
+  document.getElementById('vt').textContent=T+' °C';document.getElementById('vm').textContent=M.toString().replace('.',',')+' %';
+  const yrs=Math.pow(2,14-M)*Math.pow(2,(30-T)/5.6);
+  document.getElementById('out-years').textContent=yrs>=1000?'Más de 1 000 años':yrs<1?Math.max(1,Math.round(yrs*12))+' meses':Math.round(yrs).toLocaleString('es')+(Math.round(yrs)===1?' año':' años');
+  document.getElementById('out-bar').style.width=Math.min(100,Math.log2(Math.max(yrs,1))/10*100)+'%';
+  const m=document.getElementById('out-msg');
+  m.textContent=yrs<3?'Condiciones de corto plazo: la semilla pierde viabilidad rápidamente. Reduce la humedad y la temperatura.':yrs<30?'Condiciones de mediano plazo: adecuadas para colecciones de trabajo y almacenamiento refrigerado.':'Condiciones de banco de germoplasma: baja humedad y congelación detienen casi por completo el deterioro.';
+  if(M<5)m.textContent+=' Por debajo de 5 % de humedad el efecto protector deja de aumentar de forma significativa.';
+}
+rt.oninput=rm.oninput=sim;sim();
+
+// Revelar al hacer scroll
+let revealed=false;
+function startReveal(){
+  if(revealed)return;revealed=true;
+  const io=new IntersectionObserver(es=>es.forEach(e=>{
+    if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}
+  }),{threshold:.15});
+  document.querySelectorAll('.split,.fade').forEach(el=>io.observe(el));
+}
+
+// ===== Intro: título con letras animadas y transición suave al sitio =====
+(function(){
+  const intro=document.getElementById('intro'),video=document.getElementById('bgVideo'),layer=document.getElementById('presentationLayer');
+  const box=document.getElementById('dynamicTitle');
+  const text="Guía técnica para productores locales y bancos de germoplasma comunitarios";
+  let delay=2.8,done=false;
+  text.split(' ').forEach((w,wi,arr)=>{
+    const ws=document.createElement('span');ws.style.cssText='display:inline-block;white-space:nowrap';
+    [...w].forEach(c=>{const s=document.createElement('span');s.className='t-char';s.textContent=c;s.style.setProperty('--tdelay',delay+'s');ws.appendChild(s);delay+=.012});
+    box.appendChild(ws);
+    if(wi<arr.length-1){const sp=document.createElement('span');sp.className='t-space t-char';sp.textContent=' ';sp.style.setProperty('--tdelay',delay+'s');box.appendChild(sp);delay+=.006}
+  });
+  function endIntro(){
+    if(done)return;done=true;
+    layer.classList.add('fade-out-texts');
+    setTimeout(()=>{
+      intro.classList.add('out');           // desvanecido de transparencia (0,9 s)
+      document.body.classList.remove('locked');
+      scrollTo(0,0);startReveal();          // el sitio comienza a animarse mientras aparece
+      setTimeout(()=>{video.pause();intro.remove()},1000);
+    },250);
+  }
+  // La presentación siempre se muestra completa (mínimo 6 s) antes de pasar al sitio
+  const t0=Date.now();
+  function requestEnd(){setTimeout(endIntro,Math.max(0,6000-(Date.now()-t0)))}
+  video.play().catch(()=>setTimeout(endIntro,8000));
+  video.addEventListener('timeupdate',()=>{if(video.duration&&video.currentTime>=video.duration-.8)requestEnd()});
+  video.addEventListener('ended',requestEnd);
+  video.addEventListener('error',()=>setTimeout(endIntro,8000));
+  setTimeout(()=>{if(!video.currentTime)endIntro()},25000);   // solo si el video nunca arranca
+})();
+</script>
+</body>
+</html>
